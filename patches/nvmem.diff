@@ -1,5 +1,5 @@
 diff --git a/linux/block/Kconfig b/linux/block/Kconfig
-index 15027963..31e25564 100644
+index 70e4a66d..3d150544 100644
 --- a/linux/block/Kconfig
 +++ b/linux/block/Kconfig
 @@ -209,6 +209,12 @@ config BLK_INLINE_ENCRYPTION_FALLBACK
@@ -16,10 +16,10 @@ index 15027963..31e25564 100644
  
  config BLK_PM
 diff --git a/linux/block/Makefile b/linux/block/Makefile
-index c65f4da9..61331c24 100644
+index e7bd320e..c128d3f9 100644
 --- a/linux/block/Makefile
 +++ b/linux/block/Makefile
-@@ -36,3 +36,4 @@ obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= blk-crypto.o blk-crypto-profile.o \
+@@ -39,3 +39,4 @@ obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= blk-crypto.o blk-crypto-profile.o \
  					   blk-crypto-sysfs.o
  obj-$(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK)	+= blk-crypto-fallback.o
  obj-$(CONFIG_BLOCK_HOLDER_DEPRECATED)	+= holder.o
@@ -118,10 +118,10 @@ index 00000000..fd727288
 +}
 +device_initcall(blk_notifications_init);
 diff --git a/linux/block/partitions/core.c b/linux/block/partitions/core.c
-index 74022875..c42403c3 100644
+index b5c59b79..b669de78 100644
 --- a/linux/block/partitions/core.c
 +++ b/linux/block/partitions/core.c
-@@ -11,6 +11,8 @@
+@@ -12,6 +12,8 @@
  #include <linux/ctype.h>
  #include <linux/vmalloc.h>
  #include <linux/raid/detect.h>
@@ -130,7 +130,7 @@ index 74022875..c42403c3 100644
  #include "check.h"
  
  static int (*const check_part[])(struct parsed_partitions *) = {
-@@ -287,6 +289,74 @@ static ssize_t whole_disk_show(struct device *dev,
+@@ -288,6 +290,74 @@ static ssize_t whole_disk_show(struct device *dev,
  }
  static const DEVICE_ATTR(whole_disk, 0444, whole_disk_show, NULL);
  
@@ -205,7 +205,7 @@ index 74022875..c42403c3 100644
  /*
   * Must be called either with open_mutex held, before a disk can be opened or
   * after all disk users are gone.
-@@ -361,6 +431,8 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+@@ -362,6 +432,8 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
  			goto out_put;
  	}
  
@@ -215,10 +215,10 @@ index 74022875..c42403c3 100644
  	dev_set_uevent_suppress(pdev, 1);
  	err = device_add(pdev);
 diff --git a/linux/drivers/mmc/core/block.c b/linux/drivers/mmc/core/block.c
-index 05ee76cb..6d7c5d9c 100644
+index 54a923ba..a1874fd0 100644
 --- a/linux/drivers/mmc/core/block.c
 +++ b/linux/drivers/mmc/core/block.c
-@@ -2604,6 +2604,7 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
+@@ -2546,6 +2546,7 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
  	md->disk->major	= MMC_BLOCK_MAJOR;
  	md->disk->minors = perdev_minors;
  	md->disk->first_minor = devidx * perdev_minors;
@@ -226,7 +226,7 @@ index 05ee76cb..6d7c5d9c 100644
  	md->disk->fops = &mmc_bdops;
  	md->disk->private_data = md;
  	md->parent = parent;
-@@ -2638,6 +2639,10 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
+@@ -2580,6 +2581,10 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
  	if (area_type == MMC_BLK_DATA_AREA_MAIN)
  		dev_set_drvdata(&card->dev, md);
  	disk_fwnode = mmc_blk_get_partitions_node(parent, subname);
@@ -497,7 +497,7 @@ index 00000000..6de3ea64
 +MODULE_AUTHOR("Daniel Golle <daniel@makrotopia.org>");
 +MODULE_DESCRIPTION("block device NVMEM provider");
 diff --git a/linux/drivers/nvmem/core.c b/linux/drivers/nvmem/core.c
-index 311cb2e5..907b18f7 100644
+index 2f971b05..8a933bcb 100644
 --- a/linux/drivers/nvmem/core.c
 +++ b/linux/drivers/nvmem/core.c
 @@ -7,9 +7,13 @@
@@ -574,10 +574,10 @@ index 311cb2e5..907b18f7 100644
 +	return 0;
 +}
 +
- static int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
+ int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
  {
  	struct device *dev = &nvmem->dev;
-@@ -824,6 +884,25 @@ static int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_nod
+@@ -824,6 +884,25 @@ int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
  		if (nvmem->fixup_dt_cell_info)
  			nvmem->fixup_dt_cell_info(nvmem, &info);
  
@@ -604,10 +604,10 @@ index 311cb2e5..907b18f7 100644
  		kfree(info.name);
  		if (ret) {
 diff --git a/linux/include/linux/blkdev.h b/linux/include/linux/blkdev.h
-index d463b9b5..ed5fe1f9 100644
+index 9213a571..49738139 100644
 --- a/linux/include/linux/blkdev.h
 +++ b/linux/include/linux/blkdev.h
-@@ -83,11 +83,13 @@ struct partition_meta_info {
+@@ -85,11 +85,13 @@ struct partition_meta_info {
   * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
   * scan for partitions from add_disk, and users can't add partitions manually.
   *
@@ -621,7 +621,7 @@ index d463b9b5..ed5fe1f9 100644
  };
  
  enum {
-@@ -1879,4 +1881,15 @@ static inline int bio_split_rw_at(struct bio *bio,
+@@ -1913,4 +1915,15 @@ static inline unsigned int max_integrity_io_size(struct queue_limits *lim)
  
  #define DEFINE_IO_COMP_BATCH(name)	struct io_comp_batch name = { }
  

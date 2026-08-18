@@ -1,8 +1,8 @@
 diff --git a/linux/net/core/neighbour.c b/linux/net/core/neighbour.c
-index c56a4e7b..e7ba8fa6 100644
+index 1349c0ee..6e29de91 100644
 --- a/linux/net/core/neighbour.c
 +++ b/linux/net/core/neighbour.c
-@@ -471,7 +471,8 @@ static int __neigh_ifdown(struct neigh_table *tbl, struct net_device *dev,
+@@ -470,7 +470,8 @@ static int __neigh_ifdown(struct neigh_table *tbl, struct net_device *dev,
  	}
  	spin_unlock_bh(&tbl->lock);
  

@@ -1,8 +1,8 @@
 diff --git a/linux/Makefile b/linux/Makefile
-index 61f8019e..bccb3444 100644
+index ddcc6dca..a874a99d 100644
 --- a/linux/Makefile
 +++ b/linux/Makefile
-@@ -443,6 +443,9 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
+@@ -445,6 +445,9 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
  HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
  HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
  
@@ -12,20 +12,20 @@ index 61f8019e..bccb3444 100644
  ifneq ($(LLVM),)
  ifneq ($(filter %/,$(LLVM)),)
  LLVM_PREFIX := $(LLVM)
-@@ -514,7 +517,7 @@ KBUILD_PROCMACROLDFLAGS := $(or $(PROCMACROLDFLAGS),$(KBUILD_HOSTLDFLAGS))
+@@ -525,7 +528,7 @@ KBUILD_PROCMACROLDFLAGS := $(or $(PROCMACROLDFLAGS),$(KBUILD_HOSTLDFLAGS))
  CPP		= $(CC) -E
  ifneq ($(LLVM),)
  CC		= $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
 -LD		= $(LLVM_PREFIX)ld.lld$(LLVM_SUFFIX)
 +LD		= $(LLVM_PREFIX)ld$(LLVM_SUFFIX)
  AR		= $(LLVM_PREFIX)llvm-ar$(LLVM_SUFFIX)
+ LLVM_LINK	= $(LLVM_PREFIX)llvm-link$(LLVM_SUFFIX)
  NM		= $(LLVM_PREFIX)llvm-nm$(LLVM_SUFFIX)
- OBJCOPY		= $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)
 diff --git a/linux/tools/scripts/Makefile.include b/linux/tools/scripts/Makefile.include
-index b5ecf137..ebc0b360 100644
+index 41971a68..fe556a91 100644
 --- a/linux/tools/scripts/Makefile.include
 +++ b/linux/tools/scripts/Makefile.include
-@@ -60,7 +60,7 @@ endif
+@@ -62,7 +62,7 @@ endif
  
  $(call allow-override,CC,$(LLVM_PREFIX)clang$(LLVM_SUFFIX))
  $(call allow-override,AR,$(LLVM_PREFIX)llvm-ar$(LLVM_SUFFIX))
